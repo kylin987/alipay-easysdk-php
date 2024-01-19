@@ -23,6 +23,7 @@ use Alipay\EasySDK\Util\AES\Client as aesClient;
 class Factory
 {
     public $config = null;
+    public $appId = null;
     public $kernel = null;
     private static $instance;
     protected static $base;
@@ -31,6 +32,7 @@ class Factory
     protected static $payment;
     protected static $security;
     protected static $util;
+
 
     private function __construct($config)
     {
@@ -53,11 +55,15 @@ class Factory
         self::$payment = new Payment($kernel);
         self::$security = new Security($kernel);
         self::$util = new Util($kernel);
+        $this->appId = $config->appId;
     }
 
     public static function setOptions($config)
     {
         if (!(self::$instance instanceof self)) {
+            self::$instance = new self($config);
+        }
+        if (self::$instance->appId != $config->appId) {
             self::$instance = new self($config);
         }
         return self::$instance;
